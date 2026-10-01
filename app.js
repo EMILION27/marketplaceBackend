@@ -8,8 +8,6 @@ import notFoundMiddleware from "./v1/middlewares/notFound.middleware.js";
 import v1 from "./v1/v1.routes.js";
 import {errorMiddleware} from "./v1/middlewares/error.middleware.js";
 
-conectDB();
-
 const app = express();
 
 app.set("trust proxy", 1); 
@@ -30,7 +28,10 @@ app.get("/", (req, res) => {
   res.send("Nueva respuesta desde el servidor");
 });
 
-app.use("/v1", v1);
+app.use("/v1", async (req, res, next) => {
+  await conectDB();
+  next();
+}, v1);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
