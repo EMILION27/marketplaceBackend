@@ -9,7 +9,6 @@ const router = express.Router({ mergeParams: true });
 // Ver categorias: cualquier usuario logueado
 router.get("/", obtenerCategorias);
 
-// Crear, editar y borrar: solo el admin
 router.post("/", authorizeRoles(["admin"]), validateBodyMiddleware(categoriaSchema), guardarCategoria);
 router.patch("/:id", authorizeRoles(["admin"]), validateBodyMiddleware(categoriaSchema), actualizarCategoria);
 router.delete("/:id", authorizeRoles(["admin"]), eliminarCategoria);

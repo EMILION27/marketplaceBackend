@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-// Reglas para pedir la descripcion a la IA
+// la descripcion a la IA
 export const generarDescripcionSchema = Joi.object({
     titulo: Joi.string().trim().min(2).max(100).required().messages({
         'string.empty': 'El título es obligatorio',

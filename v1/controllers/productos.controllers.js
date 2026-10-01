@@ -2,7 +2,7 @@ import { obtenerProductosService, obtenerMisProductosService, obtenerProductoSer
     guardarProductoService, actualizarProductoService, eliminarProductoService } from "../services/productos.services.js";
 
 export const obtenerProductos = async (req, res) => {
-    const busqueda = req.query; //preguntar si ta bien la parte de filtro
+    const busqueda = req.query; 
     const resultado = await obtenerProductosService(busqueda);
     res.status(200).json(resultado);
 }

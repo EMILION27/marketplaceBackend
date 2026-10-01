@@ -10,7 +10,7 @@ export const limiterGlobal = rateLimit
 export const limiterLogin = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 20,
-    skipSuccessfulRequests: true, // los logins correctos no cuentan
+    skipSuccessfulRequests: true, 
     message: { message: "Demasiados intentos de login. Probá de nuevo en 15 minutos" }
 });
 
@@ -18,7 +18,7 @@ export const limiterLogin = rateLimit({
 export const limiterSaldo = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 10,
-    keyGenerator: (req) => req.user.id, // limitamos por ID de usuario, como en el ejemplo del profe
+    keyGenerator: (req) => req.user.id, 
     message: { message: "Demasiadas recargas en poco tiempo. Intentá más tarde" }
 });
 
@@ -26,6 +26,6 @@ export const limiterSaldo = rateLimit({
 export const limiterCompra = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 10,
-    keyGenerator: (req) => req.user.id, // limitamos por ID de usuario
+    keyGenerator: (req) => req.user.id, 
     message: { message: "Demasiadas compras en poco tiempo. Intentá más tarde" }
 });
