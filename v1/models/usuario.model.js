@@ -36,7 +36,23 @@ const usuarioSchema = new mongoose.Schema({
     foto: {
         type: String,
         default: "https://res.cloudinary.com/ihlugi3b/image/upload/v1790857971/avatarDefault.png"    // avatar por defecto (como el de Instagram)
-    }
+    },
+    // Datos del perfil público (opcionales)
+    nombreUsuario: {
+        type: String,
+        unique: true,
+        sparse: true,       // único, pero puede no tenerlo
+        lowercase: true
+    },
+    descripcion: {
+        type: String
+    },
+    redes: {
+        instagram: { type: String },
+        facebook: { type: String },
+        sitioWeb: { type: String }
+    },
+    favoritos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Producto" }]
 }, { collection: "usuarios", timestamps: true });
 
 export default mongoose.model("Usuario", usuarioSchema);

@@ -15,11 +15,11 @@ export const limiterLogin = rateLimit({
 });
 
 
-export const limiterSaldo = rateLimit({
+export const limiterPlan = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 10,
     keyGenerator: (req) => req.user.id, 
-    message: { message: "Demasiadas recargas en poco tiempo. Intentá más tarde" }
+    message: { message: "Demasiados intentos de pago en poco tiempo. Intentá más tarde" }
 });
 
 

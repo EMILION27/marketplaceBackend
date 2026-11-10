@@ -12,6 +12,12 @@ export const agregarProductoSchema = Joi.object({
         'number.positive': 'El precio debe ser mayor a 0',
         'any.required': 'El precio es obligatorio'
     }),
+    descuento: Joi.number().integer().min(0).max(70).optional().messages({
+        'number.base': 'El descuento debe ser un número',
+        'number.integer': 'El descuento debe ser un número entero',
+        'number.min': 'El descuento no puede ser negativo',
+        'number.max': 'El descuento no puede ser mayor a {#limit}%'
+    }),
     stock: Joi.number().integer().min(0).required().messages({
         'number.base': 'El stock debe ser un número',
         'number.integer': 'El stock debe ser un número entero',
@@ -42,6 +48,12 @@ export const actualizarProductoSchema = Joi.object({
     precio: Joi.number().positive().messages({
         'number.base': 'El precio debe ser un número',
         'number.positive': 'El precio debe ser mayor a 0'
+    }),
+    descuento: Joi.number().integer().min(0).max(70).messages({
+        'number.base': 'El descuento debe ser un número',
+        'number.integer': 'El descuento debe ser un número entero',
+        'number.min': 'El descuento no puede ser negativo',
+        'number.max': 'El descuento no puede ser mayor a {#limit}%'
     }),
     stock: Joi.number().integer().min(0).messages({
         'number.base': 'El stock debe ser un número',

@@ -7,6 +7,8 @@ import usuariosRouter from "./routes/usuarios.routes.js";
 import cotizacionRouter from "./routes/cotizacion.routes.js";
 import uploadsRouter from "./routes/uploads.routes.js";
 import aiRouter from "./routes/ai.routes.js";
+import comprasRouter from "./routes/compras.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 
 
 const router = express.Router({ mergeParams: true });
@@ -21,5 +23,7 @@ router.use("/usuarios", usuariosRouter);
 router.use("/cotizacion", cotizacionRouter);
 router.use("/uploads", uploadsRouter);
 router.use("/ai", aiRouter);
+router.use("/compras", comprasRouter);
+router.use("/admin", adminRouter);
 
 export default router;

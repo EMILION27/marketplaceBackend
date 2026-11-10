@@ -1,13 +1,18 @@
-import { comprarProductoService, obtenerMisComprasService } from "../services/compras.services.js";
+import { pagarCarritoService, obtenerMisComprasService, obtenerMisVentasService } from "../services/compras.services.js";
 
-export const comprarProducto = async (req, res) => {
-    const { id } = req.params;
-    const { cantidad } = req.validatedBody;
-    const { compra, saldo } = await comprarProductoService(id, req.user.id, cantidad);
-    res.status(201).json({ message: "Compra realizada", compra, saldo });
+export const pagarCarrito = async (req, res) => {
+    // De la tarjeta solo se valida que esté bien (Joi): no se pasa al service ni se guarda
+    const { items } = req.validatedBody;
+    const { pedido, total, compras } = await pagarCarritoService(req.user.id, items);
+    res.status(201).json({ message: "Pago aprobado (simulado). Compra realizada", pedido, total, compras });
 }
 
 export const obtenerMisCompras = async (req, res) => {
     const compras = await obtenerMisComprasService(req.user.id);
     res.status(200).json({ compras });
+}
+
+export const obtenerMisVentas = async (req, res) => {
+    const ventas = await obtenerMisVentasService(req.user.id);
+    res.status(200).json({ ventas });
 }
