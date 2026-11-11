@@ -4,6 +4,7 @@ import Categoria from "../models/categoria.model.js";
 import Usuario from "../models/usuario.model.js";
 
 const limitePlanPlus = 4;
+const descuentoMaximoPlus = 30; // el plan plus puede poner hasta 30% de descuento (premium hasta 70%, lo controla el validador)
 
 // Precio con el descuento aplicado. Lo calcula siempre el backend: el cliente nunca manda el precio final
 const calcularPrecioFinal = (precio, descuento = 0) => {
@@ -130,6 +131,11 @@ export const guardarProductoService = async (productoData, idUsuario) => {
             errorLimite.status = 403;
             throw errorLimite;
         }
+        if (productoData.descuento > descuentoMaximoPlus) {
+            const errorDescuento = new Error(`El plan plus permite descuentos de hasta ${descuentoMaximoPlus}%. Pasate a premium para poner hasta 70%`);
+            errorDescuento.status = 403;
+            throw errorDescuento;
+        }
     }
 
     const categoria = await Categoria.findById(productoData.categoria);
@@ -177,6 +183,16 @@ export const actualizarProductoService = async (id, productoData, usuarioToken) 
             throw errorCategoria;
         }
     }
+    // Si el dueño del producto es plus, el descuento no puede pasar de 30%
+    if (productoData.descuento > descuentoMaximoPlus) {
+        const vendedor = await Usuario.findById(producto.vendedor);
+        if (vendedor?.plan === "plus") {
+            const errorDescuento = new Error(`El plan plus permite descuentos de hasta ${descuentoMaximoPlus}%. Pasate a premium para poner hasta 70%`);
+            errorDescuento.status = 403;
+            throw errorDescuento;
+        }
+    }
+
     // Si cambia el precio o el descuento, se recalcula el precio final
     const precio = productoData.precio ?? producto.precio;
     const descuento = productoData.descuento ?? producto.descuento;
