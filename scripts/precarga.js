@@ -1,6 +1,5 @@
-// Script de precarga ("seed"): carga vendedores, categorías y productos de ejemplo con sus fotos.
-// Se corre a mano, una vez: npm run seed
-// Las fotos van en scripts/imagenes/ (no se suben a GitHub). Se suben a Cloudinary y en Mongo queda la URL.
+// precarga de vendedores, categorias y productos de ejemplo. Se corre con npm run seed
+// las fotos van en scripts/imagenes (no se suben a github)
 import "dotenv/config";
 import fs from "fs";
 import mongoose from "mongoose";
@@ -15,8 +14,7 @@ import Producto from "../v1/models/producto.model.js";
 const carpetaImagenes = "scripts/imagenes";
 const passwordVendedores = "Prueba123";
 
-// Vendedores de prueba. Cada uno vende un rubro, como en un marketplace de verdad.
-// Camila es plan plus: tiene justo 4 productos, así se puede mostrar el límite del plan.
+// camila es plus y tiene 4 productos, para mostrar el limite
 const vendedores = [
     { nombre: "Martín", apellido: "Pérez", email: "martin@test.com", plan: "premium" },        // 0: Tecnología
     { nombre: "Sofía", apellido: "Rodríguez", email: "sofia@test.com", plan: "premium" },      // 1: Hogar y Herramientas
@@ -27,15 +25,11 @@ const vendedores = [
     { nombre: "Camila", apellido: "Torres", email: "camila@test.com", plan: "plus" },          // 6: 4 productos variados
 ];
 
-// Usuarios de prueba viejos: se borran junto con sus productos al correr la precarga
 const usuariosViejos = ["tienda1@test.com", "tienda2@test.com", "tienda3@test.com", "tienda4@test.com"];
 
-// imagen = nombre del archivo en scripts/imagenes/
-// Las categorías del marketplace, en el orden en que se muestran (se crean en este orden)
 const categorias = ["Tecnología", "Hogar", "Herramientas", "Belleza", "Moda", "Deportes", "Juguetes", "Mascotas", "Libros", "Otros"];
 
-// vendedor: posición en la lista de vendedores de arriba (0 a 6)
-// imagen: archivo que está en scripts/imagenes/ (PNG con fondo transparente)
+// vendedor: posicion en la lista de vendedores de arriba
 const productos = [
     {
         titulo: "Apple iPhone 17 Color Azul Claro",
@@ -725,20 +719,19 @@ const precarga = async () => {
         process.exit(1);
     }
 
-    // 0. Se borran los usuarios de prueba viejos y sus productos
+    // borra los usuarios de prueba viejos y sus productos
     const usuariosAnteriores = await Usuario.find({ email: { $in: usuariosViejos } });
     const idsAnteriores = usuariosAnteriores.map(u => u._id);
     const productosAnteriores = await Producto.deleteMany({ vendedor: { $in: idsAnteriores } });
     const usuariosBorrados = await Usuario.deleteMany({ _id: { $in: idsAnteriores } });
     console.log(`0. Usuarios viejos borrados: ${usuariosBorrados.deletedCount} (con ${productosAnteriores.deletedCount} productos)`);
 
-    // Los productos que se cargaron a mano para probar (cuenta "Emiliano Prueba") se borran.
-    // La cuenta queda, solo se sacan sus publicaciones.
+    // borra los productos que cargue a mano para probar (la cuenta queda)
     const cuentasPrueba = await Usuario.find({ nombre: "Emiliano", apellido: "Prueba" });
     const productosPrueba = await Producto.deleteMany({ vendedor: { $in: cuentasPrueba.map(u => u._id) } });
     console.log(`   Productos de prueba cargados a mano borrados: ${productosPrueba.deletedCount}`);
 
-    // 1. Vendedores: si no existen, se crean
+    // vendedores
     console.log("1. Vendedores");
     const idsVendedores = [];
     for (const datos of vendedores) {
@@ -752,7 +745,7 @@ const precarga = async () => {
         idsVendedores.push(vendedor._id);
     }
 
-    // 2. Categorías: si no existen, se crean (todas, en el orden de la lista)
+    // categorias
     console.log("2. Categorías");
     const idsCategorias = {};
     for (const nombre of categorias) {
@@ -765,11 +758,10 @@ const precarga = async () => {
         idsCategorias[nombre] = categoria._id;
     }
 
-    // 3. Se borran los productos anteriores de los vendedores de prueba (así no se duplican)
     const borrados = await Producto.deleteMany({ vendedor: { $in: idsVendedores } });
     console.log(`3. Productos de prueba anteriores borrados: ${borrados.deletedCount}`);
 
-    // 4. Productos: se sube cada foto a Cloudinary y se guarda el producto con la URL
+    // productos: sube la foto a cloudinary y guarda la url
     console.log("4. Productos");
     for (const datos of productos) {
         if (!idsVendedores[datos.vendedor]) {
@@ -796,7 +788,6 @@ const precarga = async () => {
         console.log(`   + ${datos.titulo}`);
     }
 
-    // 5. Los productos viejos (de antes del descuento) reciben su precio final
     const viejos = await Producto.find({ precioFinal: { $exists: false } });
     for (const producto of viejos) {
         producto.precioFinal = calcularPrecioFinal(producto.precio, producto.descuento);

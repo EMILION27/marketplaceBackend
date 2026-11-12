@@ -1,7 +1,7 @@
 import { pagarCarritoService, obtenerMisComprasService, obtenerMisVentasService } from "../services/compras.services.js";
 
 export const pagarCarrito = async (req, res) => {
-    // De la tarjeta solo se valida que esté bien (Joi): no se pasa al service ni se guarda
+    // la tarjeta solo se valida, no se guarda
     const { items } = req.validatedBody;
     const { pedido, total, compras } = await pagarCarritoService(req.user.id, items);
     res.status(201).json({ message: "Pago aprobado (simulado). Compra realizada", pedido, total, compras });

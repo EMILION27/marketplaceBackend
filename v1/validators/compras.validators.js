@@ -1,8 +1,6 @@
 import Joi from "joi";
 import { tarjetaSchema } from "./tarjeta.validators.js";
 
-// Pagar el carrito: la lista de productos con su cantidad + la tarjeta.
-// El precio NO se manda: lo calcula el backend con los datos de la base.
 export const pagarCarritoSchema = Joi.object({
     items: Joi.array().items(
         Joi.object({

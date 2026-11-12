@@ -4,11 +4,9 @@ import Producto from "../models/producto.model.js";
 import Usuario from "../models/usuario.model.js";
 import Notificacion from "../models/notificacion.model.js";
 
-// Paga todo el carrito de una vez (pago simulado con tarjeta).
-// items: [{ producto, cantidad }]. Los precios salen de la base, nunca del cliente.
+// los precios salen de la base, nunca del cliente
 export const pagarCarritoService = async (idComprador, items) => {
 
-    // 1. Revisar todo ANTES de tocar nada
     const productos = await Producto.find({ _id: { $in: items.map(i => i.producto) } });
 
     for (const item of items) {
@@ -32,8 +30,7 @@ export const pagarCarritoService = async (idComprador, items) => {
         }
     }
 
-    // 2. Descontar el stock de cada producto, solo si alcanza (igual que el cajero: en un solo paso).
-    //    Si alguno falla en el medio, se devuelve el stock que ya se había descontado.
+    // si algo falla en el medio se devuelve el stock
     const descontados = [];
     for (const item of items) {
         const productoActualizado = await Producto.findOneAndUpdate(
@@ -53,7 +50,6 @@ export const pagarCarritoService = async (idComprador, items) => {
         descontados.push(item);
     }
 
-    // 3. Guardar una compra por producto, todas con el mismo número de pedido
     const pedido = new mongoose.Types.ObjectId();
     const compras = items.map(item => {
         const producto = productos.find(p => String(p._id) === item.producto);
@@ -72,12 +68,10 @@ export const pagarCarritoService = async (idComprador, items) => {
     });
     const comprasGuardadas = await Compra.insertMany(compras);
 
-    // 4. Sumarle a cada vendedor lo que vendió (queda como "ganancias")
     for (const compra of compras) {
         await Usuario.findByIdAndUpdate(compra.vendedor, { $inc: { saldo: compra.total } });
     }
 
-    // 5. Avisarle a cada vendedor que vendió
     const comprador = await Usuario.findById(idComprador).select("nombre apellido");
     const notificaciones = compras.map(compra => ({
         usuario: compra.vendedor,

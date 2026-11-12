@@ -6,20 +6,20 @@ const compraSchema = new mongoose.Schema({
     vendedor: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
     titulo: {
         type: String,
-        required: true      
+        required: true
     },
     precioUnitario: {
         type: Number,
         required: true,
-        min: 0           // precio realmente pagado (con descuento si tenía)
+        min: 0
     },
     descuento: {
         type: Number,
-        default: 0       // descuento que tenía el producto al momento de comprar
+        default: 0
     },
     pedido: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true   // agrupa los productos que se pagaron juntos (un mismo carrito)
+        required: true   // mismo numero para lo que se pago junto
     },
     cantidad: {
         type: Number,

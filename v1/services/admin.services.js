@@ -2,14 +2,12 @@ import Usuario from "../models/usuario.model.js";
 import Categoria from "../models/categoria.model.js";
 import Producto from "../models/producto.model.js";
 
-// Datos para el panel del administrador (tarjetas y gráfico)
 export const obtenerResumenService = async () => {
     const usuarios = await Usuario.countDocuments({ rol: "usuario" });
     const productos = await Producto.countDocuments();
     const conStock = await Producto.countDocuments({ stock: { $gt: 0 } });
     const categorias = await Categoria.find();
 
-    // Cantidad de productos de cada categoría, de mayor a menor
     const productosPorCategoria = [];
     for (const categoria of categorias) {
         const cantidad = await Producto.countDocuments({ categoria: categoria._id });

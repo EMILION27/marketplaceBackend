@@ -1,7 +1,6 @@
 import Joi from "joi";
 
-// Datos de la tarjeta para los pagos simulados (carrito y plan premium).
-// Se validan y se descartan: nunca se guardan ni se devuelven.
+// se valida y se descarta, nunca se guarda
 export const tarjetaSchema = Joi.object({
     numero: Joi.string().creditCard().required().messages({
         'string.empty': 'El número de tarjeta es obligatorio',
@@ -17,7 +16,6 @@ export const tarjetaSchema = Joi.object({
     }),
     vencimiento: Joi.string().pattern(/^(0[1-9]|1[0-2])\/\d{2}$/).required()
         .custom((value, helpers) => {
-            // La tarjeta vale hasta el último día del mes indicado
             const [mes, anio] = value.split("/").map(Number);
             const primerDiaDelMesSiguiente = new Date(2000 + anio, mes, 1);
             if (primerDiaDelMesSiguiente <= new Date()) {

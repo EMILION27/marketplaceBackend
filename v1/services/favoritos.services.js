@@ -24,13 +24,12 @@ export const obtenerFavoritosService = async (idUsuario) => {
             { path: "vendedor", select: "nombre apellido" }
         ]
     });
-    // Si un producto favorito se borró, queda en null: se saca de la lista
     return usuario.favoritos.filter(producto => producto !== null);
 }
 
 export const agregarFavoritoService = async (idUsuario, idProducto) => {
     await validarProducto(idProducto);
-    // $addToSet: lo agrega solo si no estaba (no se repite)
+    // $addToSet no lo repite
     const usuario = await Usuario.findByIdAndUpdate(idUsuario, { $addToSet: { favoritos: idProducto } }, { returnDocument: 'after' });
     return usuario.favoritos;
 }
@@ -41,7 +40,6 @@ export const quitarFavoritoService = async (idUsuario, idProducto) => {
         errorId.status = 400;
         throw errorId;
     }
-    // $pull: lo saca de la lista
     const usuario = await Usuario.findByIdAndUpdate(idUsuario, { $pull: { favoritos: idProducto } }, { returnDocument: 'after' });
     return usuario.favoritos;
 }

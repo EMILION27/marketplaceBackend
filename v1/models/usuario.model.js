@@ -31,17 +31,16 @@ const usuarioSchema = new mongoose.Schema({
     },
     saldo: {
         type: Number,
-        default: 0     
+        default: 0
     },
     foto: {
         type: String,
         default: "https://res.cloudinary.com/ihlugi3b/image/upload/v1790857971/avatarDefault.png"    // avatar por defecto (como el de Instagram)
     },
-    // Datos del perfil público (opcionales)
     nombreUsuario: {
         type: String,
         unique: true,
-        sparse: true,       // único, pero puede no tenerlo
+        sparse: true,
         lowercase: true
     },
     descripcion: {

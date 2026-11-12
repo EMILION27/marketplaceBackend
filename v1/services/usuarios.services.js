@@ -3,7 +3,7 @@ import Usuario from "../models/usuario.model.js";
 import Producto from "../models/producto.model.js";
 import { usuarioSinPassword } from "../utils/usuario.util.js";
 
-const precioPremium = 500; // pago único simulado en pesos uruguayos
+const precioPremium = 500;
 
 export const obtenerPerfilService = async (id) => {
     const usuario = await Usuario.findById(id);
@@ -41,7 +41,6 @@ export const editarPerfilService = async (id, perfilData) => {
         }
     }
 
-    // Las redes se guardan una por una, para no borrar las que no se mandaron
     const { redes, ...resto } = perfilData;
     const cambios = { ...resto };
     if (redes) {
@@ -59,7 +58,7 @@ export const editarPerfilService = async (id, perfilData) => {
     return usuarioSinPassword(usuarioActualizado);
 }
 
-// Perfil público de un vendedor: solo datos públicos (nunca email, saldo, plan, compras ni contraseña)
+// solo datos publicos
 export const obtenerPerfilPublicoService = async (id) => {
     if (!isValidObjectId(id)) {
         const errorId = new Error("El id del usuario no es válido");

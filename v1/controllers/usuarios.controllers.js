@@ -6,7 +6,7 @@ export const obtenerPerfil = async (req, res) => {
 }
 
 export const cambiarPlan = async (req, res) => {
-    // De la tarjeta solo se valida que esté bien (Joi): no se pasa al service ni se guarda
+    // la tarjeta solo se valida, no se guarda
     const { usuario, precio } = await cambiarPlanService(req.user.id);
     res.status(200).json({ message: `Pago de $U ${precio} aprobado (simulado). Plan actualizado a premium`, usuario });
 }

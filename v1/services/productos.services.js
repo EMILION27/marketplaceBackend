@@ -4,23 +4,20 @@ import Categoria from "../models/categoria.model.js";
 import Usuario from "../models/usuario.model.js";
 
 const limitePlanPlus = 4;
-const descuentoMaximoPlus = 30; // el plan plus puede poner hasta 30% de descuento (premium hasta 70%, lo controla el validador)
+const descuentoMaximoPlus = 30; // plus hasta 30% de descuento
 
-// Precio con el descuento aplicado. Lo calcula siempre el backend: el cliente nunca manda el precio final
 const calcularPrecioFinal = (precio, descuento = 0) => {
     return Math.round(precio * (100 - descuento) / 100);
 }
 
-// Para buscar texto con $regex sin que los símbolos especiales rompan la búsqueda
+// para que los simbolos no rompan el regex
 const escaparRegex = (texto) => String(texto).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Cómo ordenar el listado (por defecto, los más nuevos primero)
 const ordenes = {
     recientes: { createdAt: -1, _id: -1 },
     menorPrecio: { precioFinal: 1, _id: -1 },
     mayorPrecio: { precioFinal: -1, _id: -1 }
 };
-
 
 const armarCriterio = ({ categoria, titulo, precioMin, precioMax, vendedor }) => {
     const criterio = {};
@@ -57,12 +54,11 @@ export const obtenerProductosService = async (busqueda) => {
     limit = Number(limit);
     page = Number(page);
     if (!Number.isInteger(limit) || limit < 1) limit = 10;
-    if (limit > 50) limit = 50; 
+    if (limit > 50) limit = 50;
     if (!Number.isInteger(page) || page < 1) page = 1;
     let skip = (page - 1) * limit;
     const criterio = armarCriterio(filtros);
 
-    // "buscar" (tabla del admin): el texto puede estar en el título o en el nombre del vendedor
     if (buscar) {
         const buscarSeguro = escaparRegex(buscar);
         const vendedores = await Usuario.find({
@@ -152,7 +148,6 @@ export const guardarProductoService = async (productoData, idUsuario) => {
     return nuevoProducto;
 }
 
-
 const buscarProductoPropio = async (id, usuarioToken) => {
     if (!isValidObjectId(id)) {
         const errorId = new Error("El id del producto no es válido");
@@ -183,7 +178,6 @@ export const actualizarProductoService = async (id, productoData, usuarioToken) 
             throw errorCategoria;
         }
     }
-    // Si el dueño del producto es plus, el descuento no puede pasar de 30%
     if (productoData.descuento > descuentoMaximoPlus) {
         const vendedor = await Usuario.findById(producto.vendedor);
         if (vendedor?.plan === "plus") {
@@ -193,7 +187,6 @@ export const actualizarProductoService = async (id, productoData, usuarioToken) 
         }
     }
 
-    // Si cambia el precio o el descuento, se recalcula el precio final
     const precio = productoData.precio ?? producto.precio;
     const descuento = productoData.descuento ?? producto.descuento;
     const precioFinal = calcularPrecioFinal(precio, descuento);

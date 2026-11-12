@@ -14,11 +14,11 @@ const productoSchema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 70,
-        default: 0      // porcentaje de descuento (0 = sin descuento)
+        default: 0
     },
     precioFinal: {
         type: Number,
-        min: 0          // precio con el descuento aplicado (lo calcula el backend)
+        min: 0          // lo calcula el backend
     },
     imagen: {
         type: String,

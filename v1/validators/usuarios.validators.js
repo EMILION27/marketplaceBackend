@@ -1,7 +1,6 @@
 import Joi from "joi";
 import { tarjetaSchema } from "./tarjeta.validators.js";
 
-// Pasar a premium: pago único simulado con tarjeta
 export const cambiarPlanSchema = Joi.object({
     tarjeta: tarjetaSchema.required().messages({
         'any.required': 'Los datos de la tarjeta son obligatorios'
@@ -10,7 +9,6 @@ export const cambiarPlanSchema = Joi.object({
     'object.unknown': 'El campo {#label} no esta permitido'
 });
 
-// Editar el perfil propio. El email, el rol, el plan y la contraseña NO se editan por acá
 export const editarPerfilSchema = Joi.object({
     nombre: Joi.string().trim().min(2).max(100).messages({
         'string.empty': 'El nombre no puede quedar vacío',
